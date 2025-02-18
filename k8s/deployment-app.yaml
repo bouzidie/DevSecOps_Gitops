@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: blog
-        image: bouzidieslem/nodejs_app_web:latest
+        image: bouzidieslem/nodejs_app_web:v4
         ports:
         - containerPort: 3000
         env:
