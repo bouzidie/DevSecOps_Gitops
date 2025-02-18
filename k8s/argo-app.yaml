@@ -1,0 +1,20 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: blog-app  # Nom de l'application ArgoCD
+  namespace: argocd  # Namespace où ArgoCD est installé
+spec:
+  project: default
+  source:
+    repoURL: 'https://github.com/bouzidie/DevSecOps_Gitops.git'  # Ton repo GitOps
+    targetRevision: master 
+    path: 'k8s/'  # Chemin vers les fichiers de déploiement dans le repo
+  destination:
+    server: https://kubernetes.default.svc  # Cluster cible
+    namespace: devsecops  # Namespace de ton application
+  syncPolicy:
+    automated:
+      prune: true  # Supprime les ressources obsolètes
+      selfHeal: true  # Corrige automatiquement les différences
+    syncOptions:
+      - CreateNamespace=true  # Crée le namespace s'il n'existe pas
