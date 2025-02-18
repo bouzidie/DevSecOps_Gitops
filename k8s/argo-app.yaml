@@ -7,7 +7,7 @@ spec:
   project: default
   source:
     repoURL: 'https://github.com/bouzidie/DevSecOps_Gitops.git'  # Ton repo GitOps
-    targetRevision: master 
+    targetRevision: main
     path: 'k8s/'  # Chemin vers les fichiers de déploiement dans le repo
   destination:
     server: https://kubernetes.default.svc  # Cluster cible
