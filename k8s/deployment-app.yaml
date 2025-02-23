@@ -2,6 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: blog-app
+  namespace: devsecops
 spec:
   replicas: 1
   selector:
@@ -12,6 +13,19 @@ spec:
       labels:
         app: blog
     spec:
+      serviceAccountName: blog-app-sa 
+      initContainers:
+      - name: vault-agent-init
+        image: vault:latest
+        command:
+        - "/bin/sh"
+        - "-c"
+        - |
+          vault kv get -field=username secret/mysql > /vault/secrets/db_user
+          vault kv get -field=password secret/mysql > /vault/secrets/db_password
+        volumeMounts:
+        - name: vault-secrets
+          mountPath: "/vault/secrets"
       containers:
       - name: blog
         image: bouzidieslem/nodejs_app_web:v5
@@ -21,8 +35,20 @@ spec:
         - name: DB_HOST
           value: "mysql-service"
         - name: DB_USER
-          value: "root"
+          valueFrom:
+            secretKeyRef:
+              name: vault-secrets
+              key: db_user
         - name: DB_PASSWORD
-          value: "root"
+          valueFrom:
+            secretKeyRef:
+              name: vault-secrets
+              key: db_password
         - name: DB_NAME
           value: "blog_db"
+        volumeMounts:
+        - name: vault-secrets
+          mountPath: "/vault/secrets"
+      volumes:
+      - name: vault-secrets
+        emptyDir: {}
