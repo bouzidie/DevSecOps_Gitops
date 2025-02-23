@@ -16,7 +16,7 @@ spec:
       serviceAccountName: blog-app-sa 
       initContainers:
       - name: vault-agent-init
-        image: vault:latest
+        image: hashicorp/vault:latest
         command:
         - "/bin/sh"
         - "-c"
